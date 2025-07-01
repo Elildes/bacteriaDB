@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <title>🧬 BacteriaDB</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/static/style.css" />
+    <script type="module" src="/static/app.js"></script>
+    <script type="module" src="/static/insert-form.js"></script>
+    <script type="module" src="/static/select-form.js"></script>
+    <script type="module" src="/static/update-form.js"></script>
+    <script type="module" src="/static/delete-form.js"></script>
+    <script type="module" src="/static/relation-form.js"></script>
+    <script type="module" src="/static/backup-ui.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>🧬 BacteriaDB</h1>
+        <p>Execute consultas SQL em bancos MySQL e PostgreSQL</p>
+        <div id="dbInfo" class="db-info">Carregando informações do banco...</div>
+      </header>
+
+      <!-- CRUD: INSERT -->
+      <section class="query-section">
+        <h2 style="margin-top:0">Inserir Dados</h2>
+        <div id="crud-root"></div>
+      </section>
+
+      <!-- CRUD: SELECT -->
+      <section class="query-section">
+        <h2>Consultar Dados</h2>
+        <div id="crud-select-root"></div>
+      </section>
+
+      <!-- CRUD: UPDATE -->
+      <section class="query-section">
+        <h2>Atualizar Dados</h2>
+        <div id="crud-update-root"></div>
+      </section>
+
+      <!-- CRUD: DELETE -->
+      <section class="query-section">
+        <h2>Deletar Dados</h2>
+        <div id="crud-delete-root"></div>
+      </section>
+
+      <!-- CONSULTAS RELACIONAIS -->
+      <section class="query-section" id="relation-section">
+        <h2>Consulta Relacional</h2>
+        <p class="section-description">
+        Selecione a tabela principal e o relacionamento desejado.
+        </p>
+        <div id="crud-relation-root"></div>
+      </section>
+
+
+      <!-- Editor SQL manual -->
+      <section class="query-section">
+        <div class="input-group">
+          <label for="sqlQuery">Consulta SQL Manual:</label>
+          <textarea
+            id="sqlQuery"
+            placeholder="SELECT * FROM usuario LIMIT 5;"
+            rows="4"
+          ></textarea>
+        </div>
+        <div class="button-group">
+          <button id="executeBtn" class="btn-primary">Executar Consulta</button>
+          <button id="clearBtn" class="btn-clear">Limpar</button>
+        </div>
+      </section>
+
+      <!-- Resultados da consulta -->
+      <section class="results-section">
+        <div class="results-header">
+          <h3>Resultados</h3>
+          <div class="button-group">
+            <button id="testBtn" class="btn-secondary">Testar Conexão</button>
+            <button id="infoBtn" class="btn-info">Info do Banco</button>
+          </div>
+          <span id="resultCount" class="result-count"></span>
+        </div>
+        <div id="results" class="results-container">
+          <p class="placeholder">Digite uma consulta SQL e clique em "Executar Consulta" para ver os resultados</p>
+        </div>
+      </section>
+
+      <!-- Info de endpoints da API -->
+      <section class="info-section">
+        <h3>Endpoints da API</h3>
+        <div class="endpoint">
+          <code>POST /query</code>
+          <p>Executar consulta SQL. Envie JSON: <code>{"query": "SELECT * FROM tabela;"}</code></p>
+        </div>
+        <div class="endpoint">
+          <code>GET /query/test</code>
+          <p>Testar conexão com banco de dados</p>
+        </div>
+        <div class="endpoint">
+          <code>GET /query/info</code>
+          <p>Obter informações sobre o banco configurado</p>
+        </div>
+        <div class="endpoint">
+          <code>GET /health</code>
+          <p>Verificação de saúde da API</p>
+        </div>
+      </section>
+
+      
+      <!-- BACKUP e RESTAURAÇÃO -->
+      <section class="query-section" id="backup-section">
+        <h2>Backup & Restauração</h2>
+        <div class="backup-ui">
+          <button id="backupBtn" class="btn-primary">Fazer Backup</button>
+          <form id="restoreForm" enctype="multipart/form-data" style="display:inline;">
+            <label for="restoreFile" class="btn-primary" style="margin-left: 5em; margin-right: 5em;">
+              Selecionar Backup
+              <input type="file" id="restoreFile" name="file" style="display:none;" />
+            </label>
+            <button type="submit" class="btn-primary">Restaurar Backup</button>
+          </form>
+          <div id="backupMsg" class="backup-msg"></div>
+        </div>
+      </section>
+    </div>
+  </body>
+</html>

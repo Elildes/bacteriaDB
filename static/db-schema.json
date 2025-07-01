@@ -1,0 +1,118 @@
+{
+  "usuario": {
+    "fields": [
+      { "name": "id", "type": "int", "pk": true, "unique": true, "required": true },
+      { "name": "email", "type": "string", "unique": true, "required": true },
+      { "name": "nome", "type": "string", "unique": true, "required": true },
+      { "name": "senha", "type": "string", "required": true }
+    ]
+  },
+  "isolado": {
+    "fields": [
+      { "name": "id", "type": "int", "pk": true, "unique": true, "required": true },
+      { "name": "usuario_isola_id", "type": "int", "fk": { "tabela": "usuario", "campo": "id" }, "required": true },
+      { "name": "usuario_coleta_id", "type": "int", "fk": { "tabela": "usuario", "campo": "id" }, "required": true },
+      { "name": "nome", "type": "string" },
+      { "name": "meio_cultura", "type": "string" },
+      { "name": "temperatura", "type": "int" },
+      { "name": "origem", "type": "string" },
+      { "name": "cond_oxigenacao", "type": "string" }
+    ]
+  },
+  "informacoes_deposito": {
+    "fields": [
+      { "name": "acession_ncbi", "type": "string", "pk": true, "unique": true, "required": true },
+      { "name": "isolado_id", "type": "int", "pk": true, "fk": { "tabela": "isolado", "campo": "id" }, "required": true },
+      { "name": "usuario_id", "type": "int", "fk": { "tabela": "usuario", "campo": "id" }, "required": true },
+      { "name": "tipo_amostra", "type": "string" },
+      { "name": "local_coleta", "type": "string" },
+      { "name": "data_coleta", "type": "date" },
+      { "name": "data_isolamento", "type": "date" },
+      { "name": "cobertura", "type": "int" },
+      { "name": "tecnologia", "type": "string" },
+      { "name": "metodo_montagem", "type": "string" },
+      { "name": "data_montagem", "type": "date" },
+      { "name": "versao_genoma", "type": "string" },
+      { "name": "responsavel_ncbi", "type": "string" },
+      { "name": "identificacao_taxonomia", "type": "string" }
+    ]
+  },
+  "bioinformatica": {
+    "fields": [
+      { "name": "id", "type": "int", "pk": true, "unique": true, "required": true },
+      { "name": "isolado_id", "type": "int", "fk": { "tabela": "isolado", "campo": "id" }, "required": true },
+      { "name": "pangenoma", "type": "string" },
+      { "name": "antismash", "type": "string" },
+      { "name": "ddh", "type": "string" },
+      { "name": "ggdc", "type": "string" },
+      { "name": "biosurfdb", "type": "string" },
+      { "name": "ani", "type": "string" },
+      { "name": "ident_tygs", "type": "string" },
+      { "name": "ident_shotgun", "type": "string" },
+      { "name": "ident_16s", "type": "string" },
+      { "name": "sintenia", "type": "string" },
+      { "name": "genoma_circular", "type": "string" },
+      { "name": "patogenicidade", "type": "string" },
+      { "name": "arvore_filogenetica", "type": "string" }
+    ]
+  },
+  "consorcio": {
+    "fields": [
+      { "name": "id", "type": "int", "pk": true, "unique": true, "required": true },
+      { "name": "nome", "type": "string" },
+      { "name": "amostra_origem", "type": "string" },
+      { "name": "cond_oxigenacao", "type": "string" },
+      { "name": "teste_bioquimico", "type": "string" },
+      { "name": "densidade_max", "type": "float" },
+      { "name": "analise_enzimatica", "type": "string" },
+      { "name": "eficiencia_emulsificacao", "type": "string" },
+      { "name": "meio_cultura", "type": "string" },
+      { "name": "temperatura", "type": "int" },
+      { "name": "resultado_dcpip", "type": "string" },
+      { "name": "tempo_dias", "type": "int" }
+    ]
+  },
+  "isolado_composicao_consorcio": {
+    "fields": [
+      { "name": "isolado_id", "type": "int", "pk": true, "fk": { "tabela": "isolado", "campo": "id" }, "required": true },
+      { "name": "consorcio_id", "type": "int", "pk": true, "fk": { "tabela": "consorcio", "campo": "id" }, "required": true }
+    ]
+  },
+  "bancada": {
+    "fields": [
+      { "name": "id", "type": "int", "pk": true, "unique": true, "required": true },
+      { "name": "isolado_id", "type": "int", "fk": { "tabela": "isolado", "campo": "id" }, "required": true },
+      { "name": "morfologia", "type": "string" },
+      { "name": "nome_lbmg", "type": "string" },
+      { "name": "cepa", "type": "string" },
+      { "name": "coloracao_gram", "type": "boolean" },
+      { "name": "consistencia", "type": "string" },
+      { "name": "elevacao", "type": "string" },
+      { "name": "textura", "type": "string" },
+      { "name": "cor", "type": "string" },
+      { "name": "brilho", "type": "boolean" },
+      { "name": "transparencia", "type": "string" },
+      { "name": "borda", "type": "string" },
+      { "name": "forma", "type": "string" }
+    ]
+  },
+  "unidade_experimental": {
+    "fields": [
+      { "name": "id", "type": "int", "pk": true, "unique": true, "required": true },
+      { "name": "isolado_id", "type": "int", "fk": { "tabela": "isolado", "campo": "id" }, "required": true },
+      { "name": "tipo", "type": "string" }
+    ]
+  },
+  "curva_crescimento": {
+    "fields": [
+      { "name": "id", "type": "int", "pk": true, "unique": true, "required": true },
+      { "name": "ugcurva_id", "type": "int", "required": true },
+      { "name": "tempo_horas", "type": "int" },
+      { "name": "densidade_optica", "type": "string" },
+      { "name": "tipo_substrato", "type": "string" },
+      { "name": "uexperimental_id", "type": "int", "fk": { "tabela": "unidade_experimental", "campo": "id" }, "required": true },
+      { "name": "data", "type": "date" },
+      { "name": "responsavel", "type": "string" }
+    ]
+  }
+}

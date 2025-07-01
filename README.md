@@ -191,13 +191,28 @@ Verificação de saúde da API.
 
 ## 💻 Interface Web
 
-Acesse `http://localhost:3010` para usar a interface web que inclui:
+## 💻 Interface Web
 
-- ✅ **Execução de consultas** com editor SQL
+Acesse `http://localhost:3010` para utilizar a interface visual do BacteriaDB, que inclui:
+
+- ✅ **Execução de consultas** com editor SQL manual
+- ✅ **Formulários automáticos de CRUD** para inserção, consulta, atualização e remoção de dados
+- ✅ **Consultas relacionais** guiadas por formulário (joins dinâmicos via seleção de tabelas e FKs)
 - ✅ **Teste de conectividade** com o banco atual
-- ✅ **Informações do banco** (tipo, host, porta, etc.)
+- ✅ **Informações do banco** (tipo, host, porta, banco selecionado, etc.)
 - ✅ **Resultados formatados** em tabelas responsivas
 - ✅ **Indicador visual** do tipo de banco conectado
+- ✅ **Geração de logs de auditoria**  
+  (todas as operações CRUD, consultas e erros são registrados em `/logs/app.log`)
+- ✅ **Backup do banco de dados**  
+  (botão “Fazer backup” exporta arquivo `.sql` para download)
+- ✅ **Restauração de backup**  
+  (upload de arquivo `.sql` via formulário para restaurar o banco)
+- ✅ **Mensagens amigáveis** e status detalhado das operações no frontend
+
+ Todas as interações são registradas no log e as operações críticas (backup/restauração) possuem feedback automático de sucesso ou falha.  
+
+
 
 ## 📥 Exemplos de Uso
 

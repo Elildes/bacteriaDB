@@ -23,6 +23,11 @@ document.addEventListener('DOMContentLoaded', () => {
   // Inicializar informações do banco
   loadDatabaseInfo();
 
+  // Inicializar componente de busca relacional avançada
+  if (typeof initAdvancedRelationForm === 'function') {
+    initAdvancedRelationForm();
+  }
+
   executeBtn.addEventListener('click', async () => {
     const query = sqlQuery.value.trim();
     if (!query) {

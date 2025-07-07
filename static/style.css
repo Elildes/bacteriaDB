@@ -632,3 +632,38 @@ header p {
 .relation-form button[type="submit"]:hover {
   background: #6240a2;
 }
+
+/** Menus */
+
+.sidebar {
+  min-height: 100vh;
+  background: #fff;
+  border-right: 1px solid #e5e5e5;
+}
+
+.sidebar .nav-link {
+  color: #333;
+}
+
+.sidebar .nav-link.active {
+  background: #e9ecef;
+  color: #007bff;
+}
+
+.sidebar .collapse .nav-link {
+  padding-left: 2rem;
+}
+
+.sidebar .sidebar-heading {
+  font-size: 1.1rem;
+  font-weight: bold;
+  padding: 1rem 1.5rem 0.5rem;
+  color: #555;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    min-height: auto;
+    border-right: none;
+  }
+}

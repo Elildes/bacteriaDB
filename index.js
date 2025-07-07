@@ -17,6 +17,9 @@ app.use(express.json({ limit: '10mb' }));
 // Serve arquivos estáticos em /static 
 app.use('/static', express.static(resolve(__dirname, 'static')));
 
+// Serve arquivos estáticos em /pages
+app.use('/pages', express.static(resolve(__dirname, 'pages')));
+
 // Rotas de operações SQL e backup/restore
 app.use('/query', queryRoutes);
 app.use('/backup', backupRoutes); 

@@ -109,3 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 });
+
+// Servir arquivos estáticos da pasta pages
+const path = require('path');
+app.use('/pages', express.static(path.join(__dirname, 'pages')));

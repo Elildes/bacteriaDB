@@ -20,10 +20,13 @@ bacteriadb
 │   ├── delete-form.js    # Formulário modular de deleção (CRUD Delete)
 │   ├── insert-form.js    # Formulário modular de inserção (CRUD Insert)
 │   ├── relation-form.js  # Consulta relacional visual (JOIN por FK)
+│   ├── advanced-relation-form.js  # Consulta relacional avançada (múltiplos joins)
 │   ├── select-form.js    # Formulário modular de consulta/filtro (CRUD Select)
 │   ├── style.css         # Estilos responsivos, layout e tema visual
 │   ├── ui.js             # Componentes UI extras (modais, feedback)
 │   ├── update-form.js    # Formulário modular de atualização (CRUD Update)
+│   ├── query-examples.json # Exemplos de consultas pré-definidas
+├── ADVANCED_QUERIES_GUIDE.md  # Guia de uso das consultas avançadas
 ├── .env                  # Configurações de ambiente
 ├── .gitignore           
 ├── package.json         

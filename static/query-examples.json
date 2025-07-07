@@ -1,0 +1,168 @@
+{
+  "predefinedQueries": [
+    {
+      "name": "Isolados com Informações de Consórcio",
+      "description": "Busca isolados que fazem parte de consórcios com suas informações básicas",
+      "tables": ["isolado", "isolado_composicao_consorcio", "consorcio"],
+      "columns": [
+        "isolado.id",
+        "isolado.nome",
+        "isolado.origem",
+        "consorcio.nome",
+        "consorcio.amostra_origem",
+        "consorcio.densidade_max"
+      ],
+      "joins": [
+        [
+          {
+            "type": "fk_in",
+            "table": "isolado_composicao_consorcio",
+            "fromField": "id",
+            "toField": "isolado_id",
+            "relationship": "isolado.id ← isolado_composicao_consorcio.isolado_id"
+          },
+          {
+            "type": "fk_out",
+            "table": "consorcio",
+            "fromField": "consorcio_id",
+            "toField": "id",
+            "relationship": "isolado_composicao_consorcio.consorcio_id → consorcio.id"
+          }
+        ]
+      ]
+    },
+    {
+      "name": "Isolados com Curva de Crescimento",
+      "description": "Busca isolados com dados de curva de crescimento através de unidade experimental",
+      "tables": ["isolado", "unidade_experimental", "curva_crescimento"],
+      "columns": [
+        "isolado.id",
+        "isolado.nome",
+        "isolado.temperatura",
+        "unidade_experimental.tipo",
+        "curva_crescimento.tempo_horas",
+        "curva_crescimento.densidade_optica",
+        "curva_crescimento.tipo_substrato"
+      ],
+      "joins": [
+        [
+          {
+            "type": "fk_in",
+            "table": "unidade_experimental",
+            "fromField": "id",
+            "toField": "isolado_id",
+            "relationship": "isolado.id ← unidade_experimental.isolado_id"
+          },
+          {
+            "type": "fk_out",
+            "table": "curva_crescimento",
+            "fromField": "uexperimental_id",
+            "toField": "id",
+            "relationship": "unidade_experimental.id → curva_crescimento.uexperimental_id"
+          }
+        ]
+      ]
+    },
+    {
+      "name": "Perfil Completo do Isolado",
+      "description": "Informações completas de um isolado incluindo dados de bancada, bioinformática e depósito",
+      "tables": ["isolado", "usuario", "bancada", "bioinformatica", "informacoes_deposito"],
+      "columns": [
+        "isolado.id",
+        "isolado.nome",
+        "isolado.origem",
+        "usuario.nome",
+        "usuario.email",
+        "bancada.morfologia",
+        "bancada.coloracao_gram",
+        "bioinformatica.pangenoma",
+        "bioinformatica.antismash",
+        "informacoes_deposito.acession_ncbi",
+        "informacoes_deposito.tipo_amostra"
+      ],
+      "joins": [
+        [
+          {
+            "type": "fk_out",
+            "table": "usuario",
+            "fromField": "usuario_coleta_id",
+            "toField": "id",
+            "relationship": "isolado.usuario_coleta_id → usuario.id"
+          }
+        ],
+        [
+          {
+            "type": "fk_in",
+            "table": "bancada",
+            "fromField": "isolado_id",
+            "toField": "id",
+            "relationship": "isolado.id ← bancada.isolado_id"
+          }
+        ],
+        [
+          {
+            "type": "fk_in",
+            "table": "bioinformatica",
+            "fromField": "isolado_id",
+            "toField": "id",
+            "relationship": "isolado.id ← bioinformatica.isolado_id"
+          }
+        ],
+        [
+          {
+            "type": "fk_in",
+            "table": "informacoes_deposito",
+            "fromField": "isolado_id",
+            "toField": "id",
+            "relationship": "isolado.id ← informacoes_deposito.isolado_id"
+          }
+        ]
+      ]
+    },
+    {
+      "name": "Análise de Usuários e Atividades",
+      "description": "Relatório de usuários com suas atividades de coleta e isolamento",
+      "tables": ["usuario", "isolado"],
+      "columns": [
+        "usuario.id",
+        "usuario.nome",
+        "usuario.email",
+        "isolado.id",
+        "isolado.nome",
+        "isolado.origem",
+        "isolado.meio_cultura"
+      ],
+      "joins": [
+        [
+          {
+            "type": "fk_in",
+            "table": "isolado",
+            "fromField": "usuario_coleta_id",
+            "toField": "id",
+            "relationship": "usuario.id ← isolado.usuario_coleta_id"
+          }
+        ]
+      ]
+    }
+  ],
+  "complexRelationships": [
+    {
+      "name": "Isolado → Consórcio",
+      "path": "isolado → isolado_composicao_consorcio → consorcio",
+      "description": "Relacionamento many-to-many através de tabela intermediária",
+      "hops": 2
+    },
+    {
+      "name": "Isolado → Curva de Crescimento",
+      "path": "isolado → unidade_experimental → curva_crescimento",
+      "description": "Relacionamento através de unidade experimental",
+      "hops": 2
+    },
+    {
+      "name": "Usuário → Múltiplas Funções",
+      "path": "usuario ← isolado (coleta/isolamento)",
+      "description": "Um usuário pode ter múltiplas funções no mesmo isolado",
+      "hops": 1
+    }
+  ]
+}

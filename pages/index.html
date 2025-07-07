@@ -6,11 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/static/style.css" />
     <script type="module" src="/static/app.js"></script>
+    <script type="module" src="/static/logger.js"></script>
     <script type="module" src="/static/insert-form.js"></script>
     <script type="module" src="/static/select-form.js"></script>
     <script type="module" src="/static/update-form.js"></script>
     <script type="module" src="/static/delete-form.js"></script>
     <script type="module" src="/static/relation-form.js"></script>
+    <script type="module" src="/static/advanced-relation-form.js"></script>
     <script type="module" src="/static/backup-ui.js"></script>
   </head>
   <body>
@@ -52,6 +54,15 @@
         Selecione a tabela principal e o relacionamento desejado.
         </p>
         <div id="crud-relation-root"></div>
+      </section>
+
+      <!-- CONSULTAS RELACIONAIS AVANÇADAS -->
+      <section class="query-section" id="advanced-relation-section">
+        <h2>Consulta Relacional Avançada</h2>
+        <p class="section-description">
+        Explore relacionamentos complexos entre múltiplas tabelas com joins automáticos.
+        </p>
+        <div id="advanced-relation-root"></div>
       </section>
 
 

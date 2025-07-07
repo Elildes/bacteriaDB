@@ -134,8 +134,7 @@ function createAdvancedRelationForm() {
   const header = document.createElement('div');
   header.className = 'form-header';
   header.innerHTML = `
-    <h3>🔗 Consulta Relacional Avançada</h3>
-    <p>Explore relacionamentos complexos entre tabelas com múltiplos joins</p>
+    <p>Explore relacionamentos entre múltiplas</p>
   `;
   form.appendChild(header);
 
@@ -194,7 +193,7 @@ function createAdvancedRelationForm() {
     <div class="section-header">
       <h4>🔗 Relacionamentos</h4>
       <div class="relation-controls">
-        <button type="button" class="btn-secondary" id="autoDetectRelations">Auto-detectar</button>
+        <button type="button" class="btn-secondary" id="autoDetectRelations">Selecione os Relacionamentos</button>
         <button type="button" class="btn-secondary" id="clearRelations">Limpar</button>
       </div>
     </div>

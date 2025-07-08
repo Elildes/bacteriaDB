@@ -927,31 +927,239 @@ async function executeAdvancedQuery(form) {
 // Renderiza tabela de resultados com funcionalidades avançadas
 function renderAdvancedTable(data) {
   const headers = Object.keys(data[0]);
+  const tableId = `table-${Date.now()}`;
   
   let html = `
     <div class="table-controls">
-      <button type="button" class="btn-secondary" onclick="exportToCSV(this)">📊 Exportar CSV</button>
-      <button type="button" class="btn-secondary" onclick="exportToJSON(this)">📋 Exportar JSON</button>
+      <div class="search-container">
+        <input type="text" id="tableSearch-${tableId}" placeholder="🔍 Buscar nos resultados..." class="table-search">
+        <span class="search-info" id="searchInfo-${tableId}"></span>
+      </div>
+      <div class="table-actions">
+        <button type="button" class="btn-secondary" id="clearSearch-${tableId}">Limpar Busca</button>
+      </div>
     </div>
-    <table class="advanced-results-table">
-      <thead>
-        <tr>
-          ${headers.map(h => `<th>${h}</th>`).join('')}
-        </tr>
-      </thead>
-      <tbody>
-        ${data.map(row => `
+    <div class="table-wrapper">
+      <table class="advanced-results-table" id="${tableId}" data-original='${JSON.stringify(data)}'>
+        <thead>
           <tr>
-            ${headers.map(h => `
-              <td>${row[h] !== null ? row[h] : '<span class="null">NULL</span>'}
+            ${headers.map((h, index) => `
+              <th class="sortable" data-column="${index}" data-sort-direction="none">
+                ${h} 
+                <span class="sort-indicator">⚭</span>
+              </th>
             `).join('')}
           </tr>
-        `).join('')}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          ${renderTableRows(data, headers)}
+        </tbody>
+      </table>
+    </div>
   `;
   
+  // Configurar funcionalidades após inserir o HTML
+  setTimeout(() => {
+    setupTableFunctionalities(tableId, data, headers);
+  }, 100);
+  
   return html;
+}
+
+// Renderiza as linhas da tabela
+function renderTableRows(data, headers) {
+  return data.map(row => `
+    <tr>
+      ${headers.map(h => `
+        <td data-value="${row[h] || ''}">${row[h] !== null ? row[h] : '<span class="null">NULL</span>'}</td>
+      `).join('')}
+    </tr>
+  `).join('');
+}
+
+// Configura todas as funcionalidades da tabela (ordenação, busca, exportação)
+function setupTableFunctionalities(tableId, originalData, headers) {
+  const table = document.getElementById(tableId);
+  const searchInput = document.getElementById(`tableSearch-${tableId}`);
+  const searchInfo = document.getElementById(`searchInfo-${tableId}`);
+  const clearSearchBtn = document.getElementById(`clearSearch-${tableId}`);
+  const exportBtn = document.getElementById(`exportTable-${tableId}`);
+  
+  if (!table || !searchInput) return;
+  
+  let currentData = [...originalData];
+  let currentSortColumn = null;
+  let currentSortDirection = 'none';
+  
+  // Configurar ordenação por clique nos cabeçalhos
+  table.querySelectorAll('th.sortable').forEach(th => {
+    th.addEventListener('click', () => {
+      const columnIndex = parseInt(th.dataset.column);
+      const currentDirection = th.dataset.sortDirection;
+      
+      // Limpar indicadores de outras colunas
+      table.querySelectorAll('th.sortable').forEach(header => {
+        header.dataset.sortDirection = 'none';
+        header.querySelector('.sort-indicator').textContent = '⚭';
+      });
+      
+      // Determinar nova direção
+      let newDirection = 'asc';
+      if (currentDirection === 'asc') {
+        newDirection = 'desc';
+      } else if (currentDirection === 'desc') {
+        newDirection = 'none';
+      }
+      
+      th.dataset.sortDirection = newDirection;
+      currentSortColumn = columnIndex;
+      currentSortDirection = newDirection;
+      
+      // Atualizar indicador visual
+      const indicator = th.querySelector('.sort-indicator');
+      if (newDirection === 'asc') {
+        indicator.textContent = '▲';
+      } else if (newDirection === 'desc') {
+        indicator.textContent = '▼';
+      } else {
+        indicator.textContent = '⚭';
+      }
+      
+      // Aplicar ordenação
+      sortTable(columnIndex, newDirection);
+    });
+  });
+  
+  // Configurar busca em tempo real
+  searchInput.addEventListener('input', (e) => {
+    const searchTerm = e.target.value.toLowerCase().trim();
+    filterTable(searchTerm);
+  });
+  
+  // Configurar botão limpar busca
+  clearSearchBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    filterTable('');
+  });
+  
+  // Configurar exportação CSV
+  exportBtn.addEventListener('click', () => {
+    exportTableToCSV();
+  });
+  
+  // Função para ordenar a tabela
+  function sortTable(columnIndex, direction) {
+    const tbody = table.querySelector('tbody');
+    const rows = Array.from(tbody.querySelectorAll('tr'));
+    
+    if (direction === 'none') {
+      // Restaurar ordem original
+      const filteredData = currentData.filter(row => {
+        const searchTerm = searchInput.value.toLowerCase().trim();
+        if (!searchTerm) return true;
+        return headers.some(header => {
+          const value = row[header];
+          return value && value.toString().toLowerCase().includes(searchTerm);
+        });
+      });
+      tbody.innerHTML = renderTableRows(filteredData, headers);
+      return;
+    }
+    
+    rows.sort((a, b) => {
+      const aValue = a.children[columnIndex].dataset.value;
+      const bValue = b.children[columnIndex].dataset.value;
+      
+      // Tratar valores nulos
+      if (!aValue && !bValue) return 0;
+      if (!aValue) return direction === 'asc' ? -1 : 1;
+      if (!bValue) return direction === 'asc' ? 1 : -1;
+      
+      // Detectar se é número
+      const aNum = parseFloat(aValue);
+      const bNum = parseFloat(bValue);
+      
+      if (!isNaN(aNum) && !isNaN(bNum)) {
+        // Comparação numérica
+        return direction === 'asc' ? aNum - bNum : bNum - aNum;
+      } else {
+        // Comparação de string
+        const comparison = aValue.toLowerCase().localeCompare(bValue.toLowerCase());
+        return direction === 'asc' ? comparison : -comparison;
+      }
+    });
+    
+    // Recriar tbody com linhas ordenadas
+    tbody.innerHTML = '';
+    rows.forEach(row => tbody.appendChild(row));
+  }
+  
+  // Função para filtrar a tabela
+  function filterTable(searchTerm) {
+    const tbody = table.querySelector('tbody');
+    
+    if (!searchTerm) {
+      // Mostrar todos os dados
+      const dataToShow = currentSortDirection === 'none' ? 
+        currentData : 
+        [...currentData]; // Será ordenado pelo sortTable se necessário
+      
+      tbody.innerHTML = renderTableRows(dataToShow, headers);
+      searchInfo.textContent = '';
+      
+      // Re-aplicar ordenação se houver
+      if (currentSortDirection !== 'none') {
+        setTimeout(() => sortTable(currentSortColumn, currentSortDirection), 10);
+      }
+      return;
+    }
+    
+    // Filtrar dados
+    const filteredData = currentData.filter(row => {
+      return headers.some(header => {
+        const value = row[header];
+        return value && value.toString().toLowerCase().includes(searchTerm);
+      });
+    });
+    
+    tbody.innerHTML = renderTableRows(filteredData, headers);
+    searchInfo.textContent = `${filteredData.length} de ${currentData.length} resultados`;
+    
+    // Re-aplicar ordenação nos dados filtrados
+    if (currentSortDirection !== 'none') {
+      setTimeout(() => sortTable(currentSortColumn, currentSortDirection), 10);
+    }
+  }
+  
+  // Função para exportar para CSV
+  function exportTableToCSV() {
+    const rows = table.querySelectorAll('tbody tr');
+    const visibleData = Array.from(rows).map(row => {
+      const cells = row.querySelectorAll('td');
+      return Array.from(cells).map(cell => {
+        const value = cell.dataset.value;
+        return value === '' ? 'NULL' : value;
+      });
+    });
+    
+    // Criar CSV
+    const csvContent = [
+      headers.join(','), // Cabeçalhos
+      ...visibleData.map(row => row.map(value => `"${value}"`).join(','))
+    ].join('\n');
+    
+    // Download do arquivo
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `resultados-${new Date().toISOString().slice(0,10)}.csv`;
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    showNotification('Tabela exportada para CSV!', 'info');
+  }
 }
 
 // Funções auxiliares

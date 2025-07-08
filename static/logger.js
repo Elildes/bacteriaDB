@@ -173,7 +173,7 @@ class ErrorHandler {
   }
 
   // Configura handlers globais
-  setupGlobalHandlers() {
+ /* setupGlobalHandlers() {
     window.addEventListener('error', (event) => {
       this.logger.error('Erro JavaScript não tratado', {
         message: event.message,
@@ -181,8 +181,8 @@ class ErrorHandler {
         lineno: event.lineno,
         colno: event.colno,
         error: event.error?.stack
-      });
-    });
+      }); 
+    });*/
 
     window.addEventListener('unhandledrejection', (event) => {
       this.logger.error('Promise rejeitada não tratada', {
